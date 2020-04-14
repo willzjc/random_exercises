@@ -39,8 +39,7 @@ if __name__ == '__main__':
     max_elements=[]
     for i,line in enumerate(a):
         for j,e in enumerate(line):
-            if a[i][j]==199:
-                print('stop')
+
             # Get horzontal
             try:
                 elements=a[i][j:j+4]

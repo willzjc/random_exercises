@@ -2,7 +2,8 @@
 # related to https://projecteuler.net/problem=11
 
 a=[]
-for line in  """08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
+for line in  """
+08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
 81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65
 52 70 95 23 04 60 11 42 69 24 68 56 01 32 56 71 37 02 36 91
@@ -21,8 +22,10 @@ for line in  """08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 04 42 16 73 38 25 39 11 24 94 72 18 08 46 29 32 40 62 76 36
 20 69 36 41 72 30 23 88 34 62 99 69 82 67 59 85 74 04 36 16
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
-01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48""".split("\n"):
-    a.append([int(x) for x in line.split()])
+01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48
+""".split("\n"):
+    if len(line.strip())>0:
+        a.append([int(x) for x in line.split()])
 
 def mult(productlist) -> int:
     product=1
@@ -36,6 +39,8 @@ if __name__ == '__main__':
     max_elements=[]
     for i,line in enumerate(a):
         for j,e in enumerate(line):
+            if a[i][j]==199:
+                print('stop')
             # Get horzontal
             try:
                 elements=a[i][j:j+4]
@@ -43,35 +48,42 @@ if __name__ == '__main__':
                 if element_product>max_product:
                     max_product=element_product
                     max_elements=elements
+                    max_elements.append('horizontal - Starting at [%s,%s]'%(i,j))
             except IndexError as e:
-                pass
+                continue
 
             # Get Vertical
             try:
-                elements=a[i:i+4][j]
+                elements=[a[i+k][j] for k in range(0,4)]
+                element_product = mult(elements)
                 if element_product>max_product:
                     max_product=element_product
                     max_elements=elements
+                    max_elements.append('vertical - Starting at [%s,%s]'%(i,j))
             except IndexError as e:
-                pass
+                continue
 
             # Get diagonal left to right
             try:
                 elements=[a[i+k][j+k] for k in range(0,4)]
+                element_product=mult(elements)
                 if element_product>max_product:
                     max_product=element_product
                     max_elements=elements
+                    max_elements.append('diagonal left to right - Starting at [%s,%s]'%(i,j))
             except IndexError as e:
-                pass
+                continue
 
             # Get diagonal right to left
             try:
-                elements=[a[i+k][j+k] for k in range(0,-4) if k > 0]
+                elements=[a[i+k][j-k] for k in range(0,4) if (j-k) > 0]
+                element_product = mult(elements)
                 if element_product>max_product:
                     max_product=element_product
                     max_elements=elements
+                    max_elements.append('diagonal right to left - Starting at [%s,%s]'%(i,j))
             except IndexError as e:
-                pass
+                continue
 
     print("max_product is %s"%max_product)
     print("elements are: %s"%max_elements)
